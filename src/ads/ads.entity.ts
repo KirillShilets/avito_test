@@ -1,5 +1,11 @@
 import { MaxLength } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'advertisements' })
 export class AdsEntity {
@@ -14,9 +20,22 @@ export class AdsEntity {
   @MaxLength(1000)
   description: string;
 
-  @Column('simple-array')
+  @Column({ type: 'jsonb' })
   photos: string[];
 
+  @Index()
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
+
+  @Index()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+  }
 }

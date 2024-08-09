@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
 import { AdsService } from './ads.service';
 import { CreateAdsDto } from './dto/createAds.dto';
 import { BackendValidationPipe } from 'src/pipes/backendValidation.pipe';
@@ -12,5 +20,11 @@ export class AdsController {
   @UsePipes(new BackendValidationPipe())
   async createAds(@Body('advertisement') createAdsDto: CreateAdsDto) {
     return await this.adsService.createAds(createAdsDto);
+  }
+
+  @Get()
+  @HttpCode(200)
+  async findAllAds(@Query() query: any) {
+    return await this.adsService.findAllAds(query);
   }
 }
