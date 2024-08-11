@@ -4,6 +4,9 @@ import { AdsEntity } from './ads.entity';
 import { Repository } from 'typeorm';
 import { CreateAdsDto } from './dto/createAds.dto';
 import { errorResponse } from './handlers/errorResponse.handler';
+import { AdResponseInterface } from './types/adResponse.interface';
+import { AdType } from './types/ad.type';
+import { AdsResponseInterface } from './types/adsResponse.interface';
 
 @Injectable()
 export class AdsService {
@@ -28,7 +31,7 @@ export class AdsService {
     return { id: savedAd.id };
   }
 
-  async findAllAds(query: any) {
+  async findAllAds(query: any): Promise<AdType[] | undefined[]> {
     const queryBuilder =
       this.adsRepository.createQueryBuilder('advertisements');
 
@@ -55,5 +58,45 @@ export class AdsService {
     }
 
     return await queryBuilder.getRawMany();
+  }
+
+  async findAdById(id: number, fields?: string): Promise<AdType> {
+    const queryBuilder =
+      this.adsRepository.createQueryBuilder('advertisements');
+
+    queryBuilder.where('advertisements.id = :id', { id });
+    queryBuilder.select([
+      'advertisements.name as name',
+      'advertisements.price as price',
+      'advertisements.photos ->> 0 as photos',
+    ]);
+
+    if (fields) {
+      const fieldsArray = fields.split(',');
+      if (fieldsArray.includes('description')) {
+        queryBuilder.addSelect('advertisements.description as description');
+      }
+      if (fieldsArray.includes('photos')) {
+        queryBuilder.addSelect('advertisements.photos as photos');
+      }
+    }
+
+    return await queryBuilder.getRawOne();
+  }
+
+  buildAdResponse(ad: AdType): AdResponseInterface {
+    return {
+      advertisement: {
+        ...ad,
+      },
+    };
+  }
+
+  buildAdsResponse(ads: AdType[]): AdsResponseInterface {
+    return {
+      advertisements: {
+        ...ads,
+      },
+    };
   }
 }

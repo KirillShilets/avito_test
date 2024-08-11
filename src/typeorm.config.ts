@@ -1,23 +1,26 @@
-import { DataSource } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
-const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'avito_test_user',
-  password: '123456',
-  database: 'avito',
-  synchronize: false,
-  entities: ['src/**/*.entity.ts'],
-  migrations: ['src/migrations/*.ts', 'src/seeds/*.ts'],
-});
+@Injectable()
+export class TypeOrmConfigService {
+  constructor(private configService: ConfigService) {}
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Typeorm был успешно подключен к PostreSQL');
-  })
-  .catch((err) => {
-    console.error('Ошибка в typeorm.config.ts', err);
-  });
+  createDataSourceOptions() {
+    return {
+      type: 'postgres',
+      host: this.configService.get('DATABASE_HOST'),
+      port: +this.configService.get('DATABASE_PORT'),
+      username: this.configService.get('DATABASE_USER'),
+      password: this.configService.get('DATABASE_PASSWORD'),
+      database: this.configService.get('DATABASE_NAME'),
+      synchronize: false,
+      entities: ['src/**/*.entity.ts'],
+      migrations: ['src/migrations/*.ts'],
+    } as DataSourceOptions;
+  }
+}
 
-export default AppDataSource;
+export const AppDataSource = new DataSource(
+  new TypeOrmConfigService(new ConfigService()).createDataSourceOptions(),
+);
