@@ -1,9 +1,10 @@
 import {
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'advertisements' })
@@ -27,18 +28,13 @@ export class AdsEntity {
   photos: string[];
 
   @Index()
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 0 })
   price: number;
 
   @Index()
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
-
-  @BeforeUpdate()
-  updateTimestamp() {
-    this.updatedAt = new Date();
-  }
+  @UpdateDateColumn()
+  updated_at: Date;
 }

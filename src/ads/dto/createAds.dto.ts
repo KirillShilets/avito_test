@@ -23,7 +23,7 @@ export class CreateAdsDto {
   @IsNotEmpty()
   readonly photos: string[];
 
-  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsNumber()
   @IsNotEmpty()
   readonly price: number;
 }

@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AdsEntity } from './ads.entity';
 import { Repository } from 'typeorm';
 import { CreateAdsDto } from './dto/createAds.dto';
-import { errorResponse } from './handlers/errorResponse.handler';
 import { AdResponseInterface } from './types/adResponse.interface';
 import { AdType } from './types/ad.type';
 import { AdsResponseInterface } from './types/adsResponse.interface';
@@ -16,14 +15,6 @@ export class AdsService {
   ) {}
 
   async createAds(createAdsDto: CreateAdsDto) {
-    const adByName = await this.adsRepository.findOne({
-      where: { name: createAdsDto.name },
-    });
-    if (adByName) {
-      errorResponse.errors['name'] = 'has already been taken';
-      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
     const advertisement = new AdsEntity();
     Object.assign(advertisement, createAdsDto);
 
@@ -31,14 +22,14 @@ export class AdsService {
     return { id: savedAd.id };
   }
 
-  async findAllAds(query: any): Promise<AdType[] | undefined[]> {
+  async findAllAds(query: any): Promise<AdType[]> {
     const queryBuilder =
       this.adsRepository.createQueryBuilder('advertisements');
 
     queryBuilder
       .offset(0)
       .limit(10)
-      .orderBy('advertisements.price', 'ASC')
+      .orderBy('advertisements.created_at', 'ASC')
       .select([
         'advertisements.name as name',
         'advertisements.price as price',
@@ -47,13 +38,11 @@ export class AdsService {
 
     if (query.sort) {
       if (query.sort == '1') {
-        queryBuilder.orderBy('advertisements.price', 'DESC');
+        queryBuilder.orderBy('advertisements.price', 'ASC');
       } else if (query.sort == '2') {
-        queryBuilder.orderBy('advertisements.createdAt', 'DESC');
+        queryBuilder.orderBy('advertisements.price', 'DESC');
       } else if (query.sort == '3') {
-        queryBuilder.orderBy('advertisements.createdAt', 'ASC');
-      } else {
-        return [];
+        queryBuilder.orderBy('advertisements.created_at', 'DESC');
       }
     }
 
