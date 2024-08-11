@@ -1,4 +1,3 @@
-import { MaxLength } from 'class-validator';
 import {
   BeforeUpdate,
   Column,
@@ -12,12 +11,16 @@ export class AdsEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @MaxLength(200)
+  @Column({
+    type: 'varchar',
+    length: 200,
+  })
   name: string;
 
-  @Column()
-  @MaxLength(1000)
+  @Column({
+    type: 'varchar',
+    length: 1000,
+  })
   description: string;
 
   @Column({ type: 'jsonb' })
