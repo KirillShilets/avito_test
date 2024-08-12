@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AdPhotosEntity } from './photos/photos.entity';
 
 @Entity({ name: 'advertisements' })
 export class AdsEntity {
@@ -24,8 +26,8 @@ export class AdsEntity {
   })
   description: string;
 
-  @Column({ type: 'jsonb' })
-  photos: string[];
+  @OneToOne(() => AdPhotosEntity, (photos) => photos.ad)
+  photos: AdPhotosEntity;
 
   @Index()
   @Column({ type: 'decimal', precision: 10, scale: 0 })

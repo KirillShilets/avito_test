@@ -12,7 +12,7 @@ describe('AdsService', () => {
     service = module.get<AdsService>(AdsService);
   });
 
-  it('should be defined', () => {
+  it('create ad', async () => {
     expect(service).toBeDefined();
   });
 });
