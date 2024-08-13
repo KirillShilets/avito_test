@@ -7,6 +7,7 @@ import { AdResponseInterface } from './types/adResponse.interface';
 import { AdType } from './types/ad.type';
 import { AdsResponseInterface } from './types/adsResponse.interface';
 import { AdPhotosEntity } from './photos/photos.entity';
+import AppDataSource from 'src/typeorm.config';
 
 @Injectable()
 export class AdsService {
@@ -27,8 +28,16 @@ export class AdsService {
     photosEntity.second_photo = createAdsDto.photos[1] || null;
     photosEntity.third_photo = createAdsDto.photos[2] || null;
 
-    const savedAd = await this.adsRepository.save(advertisement);
-    await this.adPhotosRepository.save(photosEntity);
+    let savedAd: any;
+    await AppDataSource.manager.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        savedAd = await transactionalEntityManager.save(advertisement);
+        await transactionalEntityManager.save(photosEntity);
+        return Promise.resolve();
+      },
+    );
+
     return { id: savedAd.id };
   }
 
