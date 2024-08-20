@@ -7,15 +7,13 @@ import { AdResponseInterface } from './types/adResponse.interface';
 import { AdType } from './types/ad.type';
 import { AdsResponseInterface } from './types/adsResponse.interface';
 import { AdPhotosEntity } from './photos/photos.entity';
-import AppDataSource from 'src/typeorm.config';
+import AppDataSource from '../typeorm.config';
 
 @Injectable()
 export class AdsService {
   constructor(
     @InjectRepository(AdsEntity)
     private readonly adsRepository: Repository<AdsEntity>,
-    @InjectRepository(AdPhotosEntity)
-    private readonly adPhotosRepository: Repository<AdPhotosEntity>,
   ) {}
 
   async createAds(createAdsDto: CreateAdsDto) {
@@ -114,9 +112,7 @@ export class AdsService {
 
   buildAdsResponse(ads: AdType[]): AdsResponseInterface {
     return {
-      advertisements: {
-        ...ads,
-      },
+      advertisements: ads,
     };
   }
 }

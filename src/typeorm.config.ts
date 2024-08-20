@@ -13,12 +13,8 @@ const AppDataSource = new DataSource({
   migrations: ['src/migrations/*.ts'],
 });
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Typeorm был успешно подключен к PostreSQL');
-  })
-  .catch((err) => {
-    console.error('Ошибка в typeorm.config.ts', err);
-  });
+if (process.env.NODE_ENV !== 'test') {
+  AppDataSource.initialize();
+}
 
 export default AppDataSource;
