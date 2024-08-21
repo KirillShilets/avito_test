@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdsEntity } from './ads.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AdPhotosEntity } from './photos/photos.entity';
-import { SpecService } from './spec/spec.service';
 
 @Module({
   imports: [
@@ -13,6 +12,6 @@ import { SpecService } from './spec/spec.service';
     TypeOrmModule.forFeature([AdsEntity, AdPhotosEntity]),
   ],
   controllers: [AdsController],
-  providers: [AdsService, SpecService],
+  providers: [AdsService],
 })
 export class AdsModule {}

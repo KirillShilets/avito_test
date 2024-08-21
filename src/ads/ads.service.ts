@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AdsEntity } from './ads.entity';
 import { Repository } from 'typeorm';
@@ -91,6 +91,12 @@ export class AdsService {
     }
 
     const ad = await queryBuilder.getRawOne();
+    if (!ad) {
+      throw new HttpException(
+        'There is no such advertisements',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     return {
       name: ad.name,
