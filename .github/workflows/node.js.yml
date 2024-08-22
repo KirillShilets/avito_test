@@ -1,0 +1,24 @@
+name: Testing Avito
+run-name: ${{ github.actor }} is testing out GitHub Actions
+on: [push]
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Staring Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: install modules
+        run: npm ci
+      - name: build project
+        run: npm run build
+      - name: unit test
+        run: npm run test
+      - name: unit test with coverage
+        run: npm run test:cov
