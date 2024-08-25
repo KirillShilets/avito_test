@@ -26,7 +26,7 @@ export class AdsService {
     photosEntity.second_photo = createAdsDto.photos[1] || null;
     photosEntity.third_photo = createAdsDto.photos[2] || null;
 
-    let savedAd: any;
+    let savedAd: typeof advertisement;
     await AppDataSource.manager.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
